@@ -1,0 +1,47 @@
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+int ledPin = 8;
+int analogPin = A0;
+int sensorValue = 0;
+
+void setup() {
+  pinMode(analogPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  lcd.begin(16, 2);
+  lcd.print("Air Quality:");
+  Serial.begin(9600);
+}
+
+void loop() {
+  delay(1000);
+  sensorValue = analogRead(analogPin);
+  
+  Serial.print("Air Quality in PPM = ");
+  Serial.println(sensorValue);
+  
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Air Quality is : ");
+  lcd.print(sensorValue);
+
+  if (sensorValue <= 500) {
+    Serial.println("Fresh Air");
+    lcd.setCursor(0, 1);
+    lcd.print("Fresh Air");
+    digitalWrite(ledPin, LOW);
+  } 
+  else if (sensorValue > 500 && sensorValue <= 650) {
+    Serial.println("Poor Air");
+    lcd.setCursor(0, 1);
+    lcd.print("Poor Air");
+    digitalWrite(ledPin, HIGH);
+  } 
+  else if (sensorValue > 650) {
+    Serial.println("Very Poor Air");
+    lcd.setCursor(0, 1);
+    lcd.print("Very Poor Air");
+    digitalWrite(ledPin, HIGH);
+  }
+}
